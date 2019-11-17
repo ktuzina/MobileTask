@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Mobile" parallel="methods" thread-count="2">
+    <test name="Search tests">
+        <classes>
+            <class name="com.training.task.tests.SearchTests">
+            </class>
+        </classes>
+    </test>
+</suite>
