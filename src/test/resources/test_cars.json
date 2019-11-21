@@ -1,0 +1,25 @@
+[
+  {
+    "testName": "quickSearch",
+    "mark": "BMW",
+    "model": "i3",
+    "price": "20000",
+    "year": "2016",
+    "mileage": "30000",
+    "title": "BMW i3 60 Ah,Navi, Schnellladen"
+  },
+  {
+    "testName": "detailedSearch",
+    "mark": "BMW",
+    "model": "49",
+    "color": "Blau",
+    "title": "BMW X5 xDrive40i A"
+  },
+  {
+    "testName": "detailedSearchFail",
+    "mark": "BMW",
+    "model": "49",
+    "color": "Grau",
+    "title": "BMW X5 xDrive40i A"
+  }
+]

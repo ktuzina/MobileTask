@@ -1,37 +1,17 @@
 package com.training.task.driver;
 
+import com.training.task.utils.PropertyHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Properties;
 
 public class WebDriverCreator {
 
-    private static final String DRIVER_PROPERTIES = "driver.properties";
-
-    private static Properties pr = new Properties();
-
-    static {
-        try {
-            FileInputStream inp = new FileInputStream(Objects.requireNonNull(WebDriverCreator.class.getClassLoader().getResource(DRIVER_PROPERTIES)).getPath());
-            pr.load(inp);
-            inp.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String driverPath = pr.getProperty("chromeDriverPath");
-    private static String hubURL = pr.getProperty("hubURL");
-
-    private static final ThreadLocal<WebDriver> DRIVER = new ThreadLocal<>();
+    private static final ThreadLocal<RemoteWebDriver> DRIVER = new ThreadLocal<>();
 
     public WebDriver getDriver() {
         if (DRIVER.get() == null) {
@@ -40,14 +20,13 @@ public class WebDriverCreator {
         return DRIVER.get();
     }
 
-    private static WebDriver initDriver() {
-        WebDriver driver = null;
-        System.setProperty("webdriver.chrome.driver", driverPath);
+    private static RemoteWebDriver initDriver() {
+        RemoteWebDriver driver = null;
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setCapability("platform", Platform.WINDOWS);
         chromeOptions.addArguments("start-maximized");
         try {
-            driver = new RemoteWebDriver(new URL(hubURL), chromeOptions);
+            driver = new RemoteWebDriver(new URL(PropertyHandler.getValue("hubURL")), chromeOptions);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

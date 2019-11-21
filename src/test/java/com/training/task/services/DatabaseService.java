@@ -1,37 +1,16 @@
 package com.training.task.services;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
-import java.util.Objects;
-import java.util.Properties;
 
 public class DatabaseService {
 
     private static Long suiteID;
-    private static final String DATABASE_PROPERTIES = "database.properties";
 
-    private static Properties pr = new Properties();
-
-    static {
-        try {
-            FileInputStream inp = new FileInputStream(Objects.requireNonNull(DatabaseService.class.getClassLoader().getResource(DATABASE_PROPERTIES)).getPath());
-            pr.load(inp);
-            inp.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String databaseURL = pr.getProperty("dbURL");
-    private static String user = pr.getProperty("user");
-    private static String password = pr.getProperty("password");
-
-    public static void insertSuiteInfo() {
+    public synchronized static void insertSuiteInfo() {
+        Connection c = DbConnectionService.getConnection();
         String query = "INSERT INTO suite_results VALUES (NULL, NULL, NULL, NULL)";
         suiteID = null;
         try (
-                Connection c = DriverManager.getConnection(databaseURL, user, password);
                 PreparedStatement prState = c.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             int affectedRows = prState.executeUpdate();
             if (affectedRows == 0) {
@@ -49,10 +28,10 @@ public class DatabaseService {
         }
     }
 
-    public static void updateSuiteInfo(int count, String suiteName, long time) {
+    public synchronized static void updateSuiteInfo(int count, String suiteName, long time) {
+        Connection c = DbConnectionService.getConnection();
         String query = "UPDATE suite_results SET suite_name = ?, tests_count = ?, execution_time = ? WHERE id = ?;";
         try (
-                Connection c = DriverManager.getConnection(databaseURL, user, password);
                 PreparedStatement prState = c.prepareStatement(query)) {
             prState.setString(1, suiteName);
             prState.setInt(2, count);
@@ -65,10 +44,10 @@ public class DatabaseService {
         }
     }
 
-    public static void insertTestInfo(String testName, String result) {
+    public synchronized static void insertTestInfo(String testName, String result) {
+        Connection c = DbConnectionService.getConnection();
         String query = "INSERT INTO test_result VALUES (NULL, ?, ?, ?);";
         try (
-                Connection c = DriverManager.getConnection(databaseURL, user, password);
                 PreparedStatement prState = c.prepareStatement(query)) {
             prState.setLong(1, suiteID);
             prState.setString(2, testName);

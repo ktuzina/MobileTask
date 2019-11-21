@@ -16,27 +16,27 @@ public class MainPage {
 
     public MainPage setMark(String mark) {
         markField.selectOption(mark);
-        return new MainPage();
+        return this;
     }
 
     public MainPage setModel(String model) {
         modelField.selectOption(model);
-        return new MainPage();
+        return this;
     }
 
     public MainPage setPriceTo(String price) {
         priceToField.setValue(price);
-        return new MainPage();
+        return this;
     }
 
     public MainPage setRegistrationFrom(String registrationDate) {
         registrationFromField.setValue(registrationDate);
-        return new MainPage();
+        return this;
     }
 
     public MainPage setMileageTo(String mileageTo) {
         mileageToField.setValue(mileageTo);
-        return new MainPage();
+        return this;
     }
 
     public SearchResultPage startSearch() {

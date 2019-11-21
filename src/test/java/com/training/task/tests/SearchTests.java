@@ -1,14 +1,18 @@
 package com.training.task.tests;
 
+import com.training.task.driver.WebDriverCreator;
 import com.training.task.listeners.CustomSuiteListener;
 import com.training.task.listeners.CustomTestListener;
-import com.training.task.driver.WebDriverCreator;
 import com.training.task.pages.MainPage;
-
+import com.training.task.pojo.Car;
+import com.training.task.utils.PojoUtil;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
 
-import static com.codeborne.selenide.Selenide.*;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.WebDriverRunner.setWebDriver;
 
 @Listeners({CustomTestListener.class, CustomSuiteListener.class})
@@ -17,8 +21,14 @@ public class SearchTests {
     private WebDriver driver;
     private MainPage mainPage;
     private WebDriverCreator creator;
+    private Map<String, Car> carMap;
 
-    @BeforeMethod()
+    @BeforeSuite
+    public void readTestData() {
+        carMap = PojoUtil.fromStringToObject();
+    }
+
+    @BeforeMethod
     public void startBrowser() {
         creator = new WebDriverCreator();
         driver = creator.getDriver();
@@ -27,39 +37,42 @@ public class SearchTests {
         mainPage = new MainPage();
     }
 
-    @Test
-    public void quickSearch() {
-        mainPage.setMark("BMW")
-                .setModel("i3")
-                .setPriceTo("20000")
-                .setRegistrationFrom("2016")
-                .setMileageTo("30000")
+    @Test(description = "Search car by quick search")
+    public void quickSearch(Method method) {
+        Car car = carMap.get(method.getName());
+        mainPage.setMark(car.getMark())
+                .setModel(car.getModel())
+                .setPriceTo(car.getPrice())
+                .setRegistrationFrom(car.getYear())
+                .setMileageTo(car.getMileage())
                 .startSearch()
-                .assertCarIsFound("BMW i3 60 Ah,Navi, Schnellladen");
+                .assertCarIsFound(car.getTitle());
     }
 
-    @Test
-    public void detailedSearch() {
+    @Test(description = "Search car by detailed search")
+    public void detailedSearch(Method method) {
+        Car car = carMap.get(method.getName());
         mainPage.goToDetailedSearch()
                 .selectNewVehicle()
-                .setMark("BMW")
-                .setModel("49")
+                .setMark(car.getMark())
+                .setModel(car.getModel())
                 .selectPetrol()
-                .selectColor("Blau")
+                .selectColor(car.getColor())
                 .startSearch()
-                .assertCarIsFound("BMW X5 xDrive40i A");
+                .assertCarIsFound(car.getTitle());
     }
 
-    @Test
-    public void detailedSearchFail() {
+    @Test(description = "Search car not appropriated to criteria by detailed search")
+    public void detailedSearchFail(Method method) {
+        Car car = carMap.get(method.getName());
         mainPage.goToDetailedSearch()
                 .selectNewVehicle()
-                .setMark("BMW")
-                .setModel("49")
+                .setMark(car.getMark())
+                .setModel(car.getModel())
                 .selectPetrol()
-                .selectColor("Grau")
+                .selectColor(car.getColor())
                 .startSearch()
-                .assertCarIsFound("BMW X5 xDrive40i A");
+                .assertCarIsFound(car.getTitle());
     }
 
     @AfterMethod

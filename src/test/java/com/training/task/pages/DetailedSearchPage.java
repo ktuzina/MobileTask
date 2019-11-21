@@ -16,29 +16,29 @@ public class DetailedSearchPage {
 
     public DetailedSearchPage selectNewVehicle() {
         newVehicleCb.click();
-        return new DetailedSearchPage();
+        return this;
     }
 
     public DetailedSearchPage setMark(String mark) {
         markField.selectOption(mark);
-        return new DetailedSearchPage();
+        return this;
     }
 
     public DetailedSearchPage setModel(String modelValue) {
         modelField.selectOptionByValue(modelValue);
-        return new DetailedSearchPage();
+        return this;
     }
 
     public DetailedSearchPage selectPetrol() {
         petrolCb.click();
-        return new DetailedSearchPage();
+        return this;
     }
 
     public DetailedSearchPage selectColor(String color) {
         String xpathExpression = "//div[@title = '" + color + "']";
         colorCb = $(By.xpath(xpathExpression));
         colorCb.click();
-        return new DetailedSearchPage();
+        return this;
     }
 
     public SearchResultPage startSearch() {

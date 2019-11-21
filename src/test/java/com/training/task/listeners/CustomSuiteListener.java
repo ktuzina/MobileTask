@@ -1,7 +1,10 @@
 package com.training.task.listeners;
 
 import com.training.task.services.DatabaseService;
-import org.testng.*;
+import com.training.task.services.DbConnectionService;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
+import org.testng.ISuiteResult;
 
 import java.util.Map;
 
@@ -21,5 +24,6 @@ public class CustomSuiteListener implements ISuiteListener {
             count += r.getTestContext().getAllTestMethods().length;
         }
         DatabaseService.updateSuiteInfo(count, iSuite.getName(), time);
+        DbConnectionService.closeConnection();
     }
 }
